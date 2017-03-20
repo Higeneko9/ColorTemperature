@@ -1,0 +1,61 @@
+{
+
+  /* INFO ======================================= */
+  COMPANY: "Tickled Paws",
+  CONTACT_INFO: "support@higeneko.net",
+  PRODUCT_NAME: "Color Temperature",
+  PRODUCT_ID: "net.higeneko.color-temperature",
+  PRODUCT_VERSION: "1.0.170220.8",
+
+  /* PRODUCTS =================================== */
+
+  /* Photoshop versions range */
+
+  /* Leave undefined for no limit */
+  MIN_VERSION: 17.0,
+  MAX_VERSION: void 0,
+
+  /* Product Source Folders */
+
+  /* Leave undefined for no product to install */
+
+  /* Make sure tha paths (relative to the installer.jsx) do NOT start or end with "/" */
+  HTML_PANEL: "HTML",
+  FLASH_PANEL: void 0,
+  SCRIPT: void 0,
+  MAC_PLUGIN: void 0,
+  WIN_PLUGIN: void 0,
+  EXTRA: void 0,
+
+  /* If you have a readme file to display, put it here (path and filename) */
+  README: "readme.txt",
+
+  /* System vs. User installation */
+  SYSTEM_INSTALL: false,
+  /* Use PS shared folder for plugins */
+  SHARED_PLUGINS: false,
+
+  /* DEBUG ===================================== */
+  INSTALLER_VERSION: "0.1.2",
+  ENABLE_LOG: true,
+  LOG_FILE_PATH: File($.fileName).path,
+
+  /* will be created as LOG_FILE_PATH / PRODUCT_NAME.log */
+  LOG_FILE: "",
+
+  /* Array of RegExp for Files to be ignored (escape "\" -> "\\") 
+    Possibly a very bad idea, because the HTML Panel Signing and Timestamping
+    may easily get corrupted if something is missing in the folder.
+    Examples:
+    IGNORE     : [  
+      "^\\.\\w+", // starting with . 
+      "^\\_\\w+", // starting with _ 
+    ]
+    Leaving undefined means: don't ignore
+   */
+  IGNORE: void 0,
+
+  /* UTILS ===================================== */
+  CURRENT_PATH: File($.fileName).path,
+  CURRENT_PS_VERSION: app.version.split('.')[0]
+};

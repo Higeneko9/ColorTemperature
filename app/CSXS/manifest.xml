@@ -1,0 +1,45 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<ExtensionManifest ExtensionBundleId="net.higeneko.ColorTemperature" ExtensionBundleName="ColorTemperature" ExtensionBundleVersion="1.0" Version="5.0">
+  <ExtensionList>
+    <Extension Id="net.higeneko.ColorTemperature.extension" Version="1.0.170320.12" />
+  </ExtensionList>
+  <ExecutionEnvironment>
+    <HostList>
+      <Host Name="PHXS" Version="[17.0,99.9]" />
+    </HostList>
+    <LocaleList>
+      <Locale Code="All" />
+    </LocaleList>
+    <RequiredRuntimeList>
+      <RequiredRuntime Name="CSXS" Version="7.0" />
+    </RequiredRuntimeList>
+  </ExecutionEnvironment>
+  <DispatchInfoList>
+    <Extension Id="net.higeneko.ColorTemperature.extension">
+      <DispatchInfo>
+        <Resources>
+          <MainPath>./index.html</MainPath>
+          <ScriptPath>./host/ps.jsx</ScriptPath>
+        </Resources>
+        <UI>
+          <Type>Panel</Type>
+          <Menu>Color Temperature</Menu>
+          <Geometry>
+            <Size>
+              <Height>320</Height>
+              <Width>320</Width>
+            </Size>
+            <MinSize>
+              <Height>200</Height>
+              <Width>200</Width>
+            </MinSize>
+          </Geometry>
+          <Icons>
+            <Icon Type="Normal">./icon.png</Icon>
+            <Icon Type="RollOver">./icon.png</Icon>
+          </Icons>
+        </UI>
+      </DispatchInfo>
+    </Extension>
+  </DispatchInfoList>
+</ExtensionManifest>

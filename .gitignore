@@ -1,3 +1,8 @@
+# Project specific ignore folders
+build/
+tools/**
+!tools/packages.config
+
 # Windows image file caches
 Thumbs.db
 ehthumbs.db

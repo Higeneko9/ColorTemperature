@@ -1,0 +1,7 @@
+{
+  "compilerOptions": {
+    "alwaysStrict": true,
+    "removeComments": true 
+  },
+  "include": ["*.ts"]
+}
