@@ -13,7 +13,7 @@ This is a Photoshop CC plug-in which shows warmer and cooler colors of current c
 2. In Photoshop, select a menu **"File -> Scripts -> browse"** and pick **"Install Color Temperature1.0.jsx"**
 3. Follow the installer's instructions.
 4. Restart Photoshop.
-5. Select a menu "Window -> Extensions -> Color Temperature"
+5. Select a menu **"Window -> Extensions -> Color Temperature"**
 
 If installer doesn't work, try the following instruction:
 1. Unzip this package
