@@ -1,5 +1,5 @@
 //---------------------------------------------------------------------------------------
-//  Color Tempperature for Photoshop CC 2017
+//  Color Tempperature for Photoshop CC 2018
 //=======================================================================================
 
 Description:
@@ -7,9 +7,9 @@ Description:
     Also, it shows lighter and darker color too.
 
 How to install:
-    1. Make sure your Photoshop is up to date (This package tested against Photoshop CC 2017.0.1)
+    1. Make sure your Photoshop is up to date (This package tested against Photoshop CC 2018)
     2. Unzip this package.
-    2. In Photoshop, select a menu "File -> Scripts -> browse" and pick "Install Color Temperature1.0.jsx"
+    2. In Photoshop, select a menu "File -> Scripts -> browse" and pick "Install Color Temperature1.1.jsx"
     3. Follow the installer's instructions.
     4. Restart Photoshop.
     5. Select a menu "Window -> Extensions -> Color Temperature"

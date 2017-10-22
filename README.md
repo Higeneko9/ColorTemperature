@@ -11,9 +11,9 @@ This is a Photoshop CC plug-in which shows warmer and cooler colors of current c
 [ColorTemperature_1_0_170320_12.zip](https://github.com/Higeneko9/ColorTemperature/raw/master/dist/ColorTemperature_1_0_170320_12.zip)
 
 ## How to install:
-1. Make sure your Photoshop is up to date (This package tested against Photoshop CC 2017.0.1)
+1. Make sure your Photoshop is up to date (This package tested against Photoshop CC 2018)
 2. Unzip this package.
-2. In Photoshop, select a menu **"File -> Scripts -> browse"** and pick **"Install Color Temperature1.0.jsx"**
+2. In Photoshop, select a menu **"File -> Scripts -> browse"** and pick **"Install Color Temperature1.1.jsx"**
 3. Follow the installer's instructions.
 4. Restart Photoshop.
 5. Select a menu **"Window -> Extensions -> Color Temperature"**
@@ -37,9 +37,9 @@ If installer doesn't work, try the following instruction:
 [ColorTemperature_1_0_170320_12.zip](https://github.com/Higeneko9/ColorTemperature/raw/master/dist/ColorTemperature_1_0_170320_12.zip)
 
 ## インストール方法
-1. 最新のPhotoshop CCであることを確認してください (Photoshop CC 2017.0.1でテスト動作確認しています)
+1. 最新のPhotoshop CCであることを確認してください (Photoshop CC 2018でテスト動作確認しています)
 2. Zipファイルを解凍します
-2. フォトショップ上を開き、メニューの **"ファイル -> スクリプト -> 参照"** を選び **"Install Color Temperature1.0.jsx"** を選択します
+2. フォトショップ上を開き、メニューの **"ファイル -> スクリプト -> 参照"** を選び **"Install Color Temperature1.1.jsx"** を選択します
 3. 英語の説明がでますが、何回かOKをクリックすればインストール完了です
 4. フォトショップを再起動します
 5. メニューの **"ウィンドウ -> エクステンション -> Color Temperature"** を選択することでプラグインを使用することができます

@@ -3,18 +3,18 @@
  */
 class Matrix {
 
-	constructor(
-		public m11:number, public m12:number, public m13: number, public m14: number,
-		public m21:number, public m22:number, public m23: number, public m24: number,
-		public m31:number, public m32:number, public m33: number, public m34: number,
-		public m41:number, public m42:number, public m43: number, public m44: number)
-	{
-	}
+    constructor(
+        public m11:number, public m12:number, public m13: number, public m14: number,
+        public m21:number, public m22:number, public m23: number, public m24: number,
+        public m31:number, public m32:number, public m33: number, public m34: number,
+        public m41:number, public m42:number, public m43: number, public m44: number)
+    {
+    }
 
     /**
      * @description Gets the instance of the indentity matrix.
      */
-	static identity() : Matrix { return Matrix._identity; }
+    static identity() : Matrix { return Matrix._identity; }
 
     /**
      * @description Create a matrix that can be used to rotate a set of vertices around the z-axis.
@@ -31,11 +31,11 @@ class Matrix {
         // [ -s  c  0  0 ]
         // [  0  0  1  0 ]
         // [  0  0  0  1 ]
-		return new Matrix( 
-	           c,   s, 0.0, 0.0,
-	          -s,   c, 0.0, 0.0,
-	         0.0, 0.0, 1.0, 0.0,
-	         0.0, 0.0, 0.0, 1.0);
+        return new Matrix( 
+               c,   s, 0.0, 0.0,
+              -s,   c, 0.0, 0.0,
+             0.0, 0.0, 1.0, 0.0,
+             0.0, 0.0, 0.0, 1.0);
     }
 
     /**
@@ -252,10 +252,10 @@ class Matrix {
         var m44 = +(a * fk_gj - b * ek_gi + c * ej_fi) * invDet;
 
         return new Matrix(
-        	m11, m12, m13, m14,
-        	m21, m22, m23, m24,
-        	m31, m32, m33, m34,
-        	m41, m42, m43, m44);
+            m11, m12, m13, m14,
+            m21, m22, m23, m24,
+            m31, m32, m33, m34,
+            m41, m42, m43, m44);
     }
 
     private static _identity = new Matrix(

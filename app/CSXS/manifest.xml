@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="no"?>
 <ExtensionManifest ExtensionBundleId="net.higeneko.ColorTemperature" ExtensionBundleName="ColorTemperature" ExtensionBundleVersion="1.0" Version="5.0">
   <ExtensionList>
-    <Extension Id="net.higeneko.ColorTemperature.extension" Version="1.0.170320.12" />
+    <Extension Id="net.higeneko.ColorTemperature.extension" Version="1.1.171022.21" />
   </ExtensionList>
   <ExecutionEnvironment>
     <HostList>

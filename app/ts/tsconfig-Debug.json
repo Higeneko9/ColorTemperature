@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "alwaysStrict": true,
-    "target" :  "es5"
+    "target" :  "es6"
   },
   "include": ["*.ts"]
 }

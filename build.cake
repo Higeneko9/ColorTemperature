@@ -1,3 +1,6 @@
+#addin nuget:?package=Newtonsoft.Json&version=9.0.1
+#addin nuget:?package=BuildWebCompiler&version=1.11.375
+
 #addin "Cake.Npm"
 #addin "Cake.FileHelpers"
 #addin "Cake.Json"
@@ -7,11 +10,13 @@
 
 using System.Xml.Linq;
 using System.Xml.XPath;
+using System.Text.RegularExpressions;
+using SysIO = System.IO;
 
 //---------------------------------------------------------------------------------------
 // Global parameters
 //=======================================================================================
-var Target = Argument("target", "Test");
+var Target = Argument("target", "Default");
 var Clean = HasArgument("clean");
 
 var AppName = "ColorTemperature";
@@ -29,7 +34,9 @@ var AppSrcDir = "./app";
 var TsSrcDir = AppSrcDir + "/ts";
 var PackgeSrcDir = "./pkg";
 
+var InitJsonFilename = PackgeSrcDir + "/init.json";
 var ManifestFilename = AppSrcDir + "/CSXS/manifest.xml";
+var NpmSassFileanme = "./tools/node_modules/npm-sass/bin/npm-sass";
 
 // Build directories
 var BuildDir = "./build/" + Configuration;
@@ -53,21 +60,24 @@ class BuildConfigInfo
 
 var BuildConfigFile = "./build-config.json";
 BuildConfigInfo BuildConfig;
+Version BuildVersion;
  
 //---------------------------------------------------------------------------------------
 //  Setup
 //=======================================================================================
-var SassCompiler = "";
 var TsCompiler  = "";
 
 Setup(context => {
 
-    if (Context.Tools.Resolve("npm-sass") == null)
+    if (FileExists(NpmSassFileanme) == false)
     {
-        Npm.WithLogLevel(NpmLogLevel.Silent).FromPath("./tools/").Install(settings => settings.Package("npm-sass"));
+        Information("Installing npm-sass");
+        NpmInstall(s => {
+            s.FromPath("./tools/");
+            s.AddPackage("npm-sass");
+        });
     }
 
-    SassCompiler = Context.Tools.Resolve("npm-sass.cmd").FullPath;
     TsCompiler = Context.Tools.Resolve("tsc.exe").FullPath;
 
     BuildConfig = DeserializeJsonFromFile<BuildConfigInfo>(BuildConfigFile);
@@ -87,7 +97,18 @@ Setup(context => {
         var doc = XDocument.Load(NormalizePath(ManifestFilename));
         doc.XPathSelectElement("//ExtensionList/Extension").Attribute("Version").Value = newVer.ToString();
         doc.Save(NormalizePath(ManifestFilename));
+
+        // Update build number value in pkg/init.json
+        var lines = new List<string>();
+        foreach (var line in SysIO.File.ReadLines(NormalizePath(InitJsonFilename)))
+        {
+            lines.Add(Regex.Replace(line, "(PRODUCT_VERSION:\\s*\")([0-9.]+)(\")",
+                (m) => m.Groups[1].Value + newVer + m.Groups[3].Value));
+        }
+        SysIO.File.WriteAllLines(NormalizePath(InitJsonFilename), lines);
     }
+
+    BuildVersion = new Version(BuildConfig.PackageVersion);
 
     Information("Packge Version: {0}", BuildConfig.PackageVersion);
 });
@@ -95,8 +116,8 @@ Setup(context => {
 //---------------------------------------------------------------------------------------
 //=======================================================================================
 Task("Clean")
-    .WithCriteria(Clean)
     .Does(() => {
+        Information("Clean directory {0}", BuildDir);
         CleanDirectories(BuildDir);
     });
 
@@ -117,7 +138,7 @@ Task("Compile")
 var tsItems = CreateItemCollection(
     AppSrcDir + "/ts", "/**/*.ts",
     CompiledAppDir + "/js", ".js",
-    (p) => !p.EndsWith(".d.ts"));
+    (p, f) => p.EndsWith(".d.ts")? null: f);
 
 Task("CompileTypeScript")
     .WithCriteria(() => tsItems.IsStaled())
@@ -136,17 +157,19 @@ var scssItems = CreateItemCollection(
 Task("CompileSCSS")
     .WithCriteria(() => scssItems.IsStaled())
     .Does(() => {
+
+        var cmd = "node";
         foreach(var item in scssItems)
         {
             Information("{0} -> {1}", item.SourcePath, item.TargetPath);
             EnsureDirectoryExists(new FilePath(item.TargetPath).GetDirectory());
-            FileWriteLines(item.TargetPath, RunProcess(SassCompiler, item.SourcePath));
+            RunProcess("node", "./scripts/CompileSass.js", item.SourcePath, item.TargetPath);
         }
     });
 
 // Place App items
 var appItems = CreateItemCollection();
-appItems.Include(AppSrcDir, "/**/*", CompiledAppDir, null, (p) => !(p.Contains("/ts/") || p.Contains("/scss/")));
+appItems.Include(AppSrcDir, "/**/*", CompiledAppDir, null, (p, f) => (p.Contains("/ts/") || p.Contains("/scss/"))? null : f);
 appItems.Include(AppSrcDir + "/ts", "/**/*.js", CompiledAppDir + "/js");
 
 Task("PlaceAppFiles")
@@ -156,10 +179,19 @@ Task("PlaceAppFiles")
 //---------------------------------------------------------------------------------------
 //  Package creation tasks
 //=======================================================================================
-var packageItems = CreateItemCollection(PackgeSrcDir, "/**/*", PackageDir);
+var installerSrcFilename = "install Color Temperature.jsx";
+var packageItems = CreateItemCollection(PackgeSrcDir, "/**/*", PackageDir, null,
+                        (p, f) => p.EndsWith(installerSrcFilename)? null : f);
 
 Task("PlacePackage")
-    .WithCriteria(() => packageItems.IsStaled())
+    .WithCriteria(() => {
+            #break
+            var installerFilename = string.Format("Install Color Temperature.{0}.{1}.jsx",
+                                                        BuildVersion.Major, BuildVersion.Minor);
+            packageItems.Include(PackgeSrcDir, "/**/*", PackageDir, null,
+                 (p, f) => p.EndsWith(installerSrcFilename)? installerFilename : null);
+            return packageItems.IsStaled();
+        })
     .Does(() => packageItems.CopyFromSourceToTarget());
 
 Task("Sign")
@@ -176,7 +208,7 @@ Task("Sign")
             NormalizePath(SignedAppZxp),
             NormalizePath(BuildConfig.CertFile),
             FileReadText(BuildConfig.PassFile),
-            "-tsa https://timestamp.geotrust.com/tsa");
+            "-tsa http://timestamp.comodoca.com/");
         
         // Extract to signed-app directory.
         CleanDirectory(SignedAppDir);

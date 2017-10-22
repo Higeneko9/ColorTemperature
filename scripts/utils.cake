@@ -81,56 +81,81 @@ public class ItemCollection : ICollection<Item>
         Context = context;
     }
 
-    public ItemCollection(ICakeContext context, string srcDir, string pattern, string targetDir, string newExtension = null, Func<string, bool> filter = null)
+    public ItemCollection(ICakeContext context, string srcDir, string pattern, string targetDir,
+        string newExtension = null, Func<string, string, string> filter = null)
     {
         Context = context;
         Include(srcDir, pattern, targetDir, newExtension, filter);
     }
 
-    public ItemCollection(ICakeContext context, string srcDir, string pattern, Func<string, bool> filter = null)
+    public ItemCollection(ICakeContext context, string srcDir, string pattern, Func<string, string, string> filter = null)
     {
         Context = context;
         Include(srcDir, pattern, filter);
     }
 
-    public ItemCollection Include(string srcDir, string pattern, string targetDir, string newExtension = null, Func<string, bool> filter = null)
+    public ItemCollection Include(string srcDir, string pattern, string targetDir,
+        string newExtension = null,
+        Func<string, string, string> filter = null)
     {
         var srcDirPath = new DirectoryPath(srcDir).MakeAbsolute(Context.Environment);
         var tgtDirPath = new DirectoryPath(targetDir).MakeAbsolute(Context.Environment);
 
+        Context.Verbose("#### Create Item Collection in {0}. Patterh:{1}", srcDirPath, pattern);
+
         SourceDirectory = srcDirPath.FullPath;
         TargetDirectory = tgtDirPath.FullPath;
     
-        foreach(var filePath in Context.GetFiles(srcDirPath + pattern))
+        foreach(var curFilePath in Context.GetFiles(srcDirPath + pattern))
         {
-            if (filter != null && filter(filePath.FullPath) == false)
+            var filePath = curFilePath;
+            var targetPath = tgtDirPath.CombineWithFilePath(srcDirPath.GetRelativePath(filePath));
+            var srcRelativePath = srcDirPath.GetRelativePath(filePath);
+
+            if (filter != null)
             {
-                continue;
+                var newFilename = filter(filePath.FullPath, srcRelativePath.FullPath);
+                if (string.IsNullOrEmpty(newFilename))
+                {
+                    Context.Verbose("Ignored: {0}", filePath);
+
+                    continue;
+                }
+
+                var newFilePath = FilePath.FromString(newFilename).MakeAbsolute(srcDirPath);
+                srcRelativePath = srcDirPath.GetRelativePath(newFilePath);
+                targetPath = tgtDirPath.CombineWithFilePath(srcRelativePath);
             }
 
-            var targetPath = tgtDirPath.CombineWithFilePath(srcDirPath.GetRelativePath(filePath));
             if (string.IsNullOrEmpty(newExtension) == false)
             {
                 targetPath = targetPath.ChangeExtension(newExtension);
             }
 
+            Context.Verbose("Include: {0} -> {1}", filePath.FullPath, targetPath.FullPath);
             _items.Add(new Item(filePath.FullPath, targetPath.FullPath));
         }
 
         return this;
     }
 
-    public ItemCollection Include(string srcDir, string pattern, Func<string, bool> filter = null)
+    public ItemCollection Include(string srcDir, string pattern, Func<string, string, string> filter = null)
     {
         var srcDirPath = new DirectoryPath(srcDir).MakeAbsolute(Context.Environment);
 
         SourceDirectory = srcDirPath.FullPath;
     
-        foreach(var filePath in Context.GetFiles(srcDirPath + pattern))
+        foreach(var curFilePath in Context.GetFiles(srcDirPath + pattern))
         {
-            if (filter != null && filter(filePath.FullPath) == false)
+            var filePath = curFilePath;
+ 
+            if (filter != null)
             {
-                continue;
+                var newFilename = filter(filePath.FullPath, filePath.GetFilename().FullPath);
+                if (string.IsNullOrEmpty(newFilename))
+                {
+                    continue;
+                }
             }
 
             _items.Add(new Item(filePath.FullPath));
@@ -214,12 +239,13 @@ ItemCollection CreateItemCollection()
 }
 
 
-ItemCollection CreateItemCollection(string srcDir, string pattern, Func<string, bool> filter = null)
+ItemCollection CreateItemCollection(string srcDir, string pattern, Func<string, string, string> filter = null)
 {
     return new ItemCollection(Context, srcDir, pattern, filter);
 }
 
-ItemCollection CreateItemCollection(string srcDir, string pattern, string targetDir, string newExtension = null, Func<string, bool> filter = null)
+ItemCollection CreateItemCollection(string srcDir, string pattern, string targetDir,
+        string newExtension = null, Func<string, string, string> filter = null)
 {
     return new ItemCollection(Context, srcDir, pattern, targetDir, newExtension, filter);
 }
@@ -239,8 +265,6 @@ string[] RunProcess(string command, params string[] args)
     var settings = new ProcessSettings
     {
         Arguments = string.Join(" ", args),
-        RedirectStandardOutput = true,
-        Silent = true
     };
 
     using (var proc = StartAndReturnProcess(command, settings))
@@ -258,7 +282,7 @@ string[] RunProcess(string command, params string[] args)
 
 public string NormalizePath(string path)
 {
-    return Context.Environment.IsUnix()? path: path.Replace("/", "\\");
+    return Context.Environment.Platform.IsUnix()? path: path.Replace("/", "\\");
 }
 
 void EnsureDeleteFile(string path)

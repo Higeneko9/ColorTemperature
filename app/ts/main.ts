@@ -36,7 +36,7 @@ class ColorTemperature {
         this.resizeWatcher = new ResizeWatcher($('#screen'),
             function() {me.onResize(); });
 
-        $('#mainCanvas').mousedown(function(e:JQueryMouseEventObject){
+        $('#mainCanvas').mousedown((e) => {
             var color = me.grid.getColor(e.offsetX, e.offsetY);
             if (color) me.setColor(color);
         });
@@ -100,55 +100,55 @@ class ColorTemperature {
         });
     }
 
-	private onResize() : void {
+    private onResize() : void {
 
-		var scr = $('#screen');
-		var sw = scr.width();
-		var sh = scr.height();
+        var scr = $('#screen');
+        var sw = scr.width();
+        var sh = scr.height();
 
-		var cx = 0;
-		var cy = 0;
-		var padding = 8;
-		var vpSize;
+        var cx = 0;
+        var cy = 0;
+        var padding = 8;
+        var vpSize;
 
-		if (sw > sh)
-		{
-			vpSize = sh - padding;
-			cx = (sw - vpSize) / 2;
-			cy = padding / 2;
-		}else{
-			vpSize = sw - padding;
-			cx = padding / 2;
-			cy = (sh - vpSize) / 2;
-		}
+        if (sw > sh)
+        {
+            vpSize = sh - padding;
+            cx = (sw - vpSize) / 2;
+            cy = padding / 2;
+        }else{
+            vpSize = sw - padding;
+            cx = padding / 2;
+            cy = (sh - vpSize) / 2;
+        }
 
-	    $('.viewport').width(vpSize);
-	    $('.viewport').height(vpSize);
-	    $('.viewport').css('left', cx.toString() + 'px');
-	    $('.viewport').css('top', cy.toString() + 'px');
+        $('.viewport').width(vpSize);
+        $('.viewport').height(vpSize);
+        $('.viewport').css('left', cx.toString() + 'px');
+        $('.viewport').css('top', cy.toString() + 'px');
 
-		var mainCanvas : any = $('#mainCanvas')[0];
-		var ctx = mainCanvas.getContext('2d');
-		ctx.clearRect(0, 0, $('#mainCanvas').width(), $('#mainCanvas').height());
+        var mainCanvas : any = $('#mainCanvas')[0];
+        var ctx = mainCanvas.getContext('2d');
+        ctx.clearRect(0, 0, $('#mainCanvas').width(), $('#mainCanvas').height());
 
-		ctx.canvas.width = vpSize;
-		ctx.canvas.height = vpSize;
+        ctx.canvas.width = vpSize;
+        ctx.canvas.height = vpSize;
 
         this.grid.resize(vpSize - 32);
         this.resizeSliders();
 
-	    this.draw();
-	};
+        this.draw();
+    };
 
-	draw() : void {
-		var mainCanvas : any = $('#mainCanvas')[0];
-		var ctx = mainCanvas.getContext('2d');
+    draw() : void {
+        var mainCanvas : any = $('#mainCanvas')[0];
+        var ctx = mainCanvas.getContext('2d');
 
-		// Clear main canvas
-		ctx.clearRect(0, 0, $('#mainCanvas').width(), $('#mainCanvas').height());
+        // Clear main canvas
+        ctx.clearRect(0, 0, $('#mainCanvas').width(), $('#mainCanvas').height());
         this.grid.draw(ctx);
         this._uiManager.draw();
-	}
+    }
 
     private resizeSliders(){
 
@@ -204,7 +204,16 @@ var csInterface = new CSInterface();
 var gExtensionID = undefined;
 
 if (typeof (csInterface.getExtensionID) == "function") {
-    gExtensionID = csInterface.getExtensionID();
+
+    try {
+        gExtensionID = csInterface.getExtensionID();
+    }
+    catch (Exception) {
+        // getExtensionID throws exception when it runs on typical web-browser for debug.
+        // Set null to csInterface for disable AdobeCEP features.
+        csInterface = null;
+    }
+
 } else {
     csInterface = null;
 }
