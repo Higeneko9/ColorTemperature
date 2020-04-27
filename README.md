@@ -4,7 +4,7 @@
 
 This is a Photoshop CC plug-in which shows warmer and cooler colors of current color.
 
-![Color Temperature](https://asz0oa-dm2306.files.1drv.com/y3mnSewFP0stErLuycTgYuUOw8DArzpZv63mxAPpVRMr54ZF_nVVdUxVjgjGhOjfKT0BaBIPsjQpF25AGJBbGpziJPiKN4fRB9C9YcLxYQ-f8ZtNPL4TUWEPdybm-7PnlKX198KZ4dTHQZDQE7pmZjORCljpjltlrJvO8MjnGqq9Lk?width=711&height=452&cropmode=none)
+[![Color Temperature](https://img.youtube.com/vi/-Vlcr0r4wq4/0.jpg)](https://www.youtube.com/watch?v=-Vlcr0r4wq4)
 
 ### Download Latest Build
 
@@ -34,7 +34,7 @@ If installer doesn't work, try the following instruction:
 # Photoshop CC Plug-in "Color Temperature" (日本語説明)
 
 これはPhotoshop CC上で選択した色に隣り合う色温度と明度を表示、再選択できるプラグインです。
-![Color Temperature](https://asz0oa-dm2306.files.1drv.com/y3mnSewFP0stErLuycTgYuUOw8DArzpZv63mxAPpVRMr54ZF_nVVdUxVjgjGhOjfKT0BaBIPsjQpF25AGJBbGpziJPiKN4fRB9C9YcLxYQ-f8ZtNPL4TUWEPdybm-7PnlKX198KZ4dTHQZDQE7pmZjORCljpjltlrJvO8MjnGqq9Lk?width=711&height=452&cropmode=none)
+[![Color Temperature](https://img.youtube.com/vi/-Vlcr0r4wq4/0.jpg)](https://www.youtube.com/watch?v=-Vlcr0r4wq4)
 
 ### ダウンロード
 
