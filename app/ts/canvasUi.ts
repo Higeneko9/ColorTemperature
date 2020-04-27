@@ -1,4 +1,3 @@
-/// <reference path="d.ts/jquery.d.ts"/>
 /**
  * Simple UI system which uses HTML5 canvas.
  * @description This is minimum defnitions for avoid TS compile error.
@@ -236,21 +235,19 @@ namespace CanvasUI {
      */
     export class Manager {
 
-        private _viewport: JQuery;
-        private _canvas: JQuery;
+        private _viewport: HTMLElement;
+        private _canvas: HTMLCanvasElement;
         private _controls : Control[];
         private _captureedControl: Control = null;
         private _context: CanvasRenderingContext2D;
 
-        constructor(viewport: JQuery, canvas : JQuery){
+        constructor(viewport: HTMLElement, canvas : HTMLCanvasElement){
             this._viewport = viewport;
             this._canvas = canvas;
+            this._context = canvas.getContext('2d');
             this._controls = new Array();
 
             var me = this;
-
-            var mainCanvas: any = this._canvas[0];
-            this._context = mainCanvas.getContext('2d');
 
             this.handleMouseEvent('pointerdown', function(p: Point, c: Control){
                 return c.onMouseDown(p);
@@ -258,20 +255,16 @@ namespace CanvasUI {
 
             // mouse capturering via document element
             // http://news.qooxdoo.org/mouse-capturing
-            $(document).on('pointermove', (e) => {
+            document.addEventListener('pointermove', (e) => {
                 if (me._captureedControl == null) return;
-                var ox = parseInt(me._viewport.css('left'));
-                var oy = parseInt(me._viewport.css('top'));
-                me._captureedControl.onMouseMove(new Point(
-                    e.clientX - ox, e.clientY - oy));
+                me._captureedControl.onMouseMove(Point.subtract(
+                    new Point(e.clientX, e.clientY), Rect.fromElementBounds(me._viewport).pos()));
             });
 
-            $(document).on('pointerup', (e) => {
+            document.addEventListener('pointerup', (e) => {
                 if (me._captureedControl == null) return;
-                var ox = parseInt(me._viewport.css('left'));
-                var oy = parseInt(me._viewport.css('top'));
-                me._captureedControl.onMouseUp(new Point(
-                    e.clientX - ox, e.clientY - oy));
+                me._captureedControl.onMouseUp(Point.subtract(
+                    new Point(e.clientX, e.clientY), Rect.fromElementBounds(me._viewport).pos()));
             });
         }
 
@@ -304,21 +297,23 @@ namespace CanvasUI {
             }
         }
 
-        private handleMouseEvent(eventName: string,
-            callback: (pos: Point, control: Control) => boolean){
-
+        private handleMouseEvent(eventName: string, callback: (pos: Point, control: Control) => boolean)
+        {
             var me = this;
-            this._canvas.on(eventName, (e) => {
 
-                var ox = parseInt(me._canvas.css('left'));
-                var oy = parseInt(me._canvas.css('top'));
-                var pos = new Point(e.clientX, e.clientY);
+            this._canvas.addEventListener(eventName, (e : MouseEvent) =>
+            {
+                var pos = Point.subtract(
+                    new Point(e.clientX, e.clientY), Rect.fromElementBounds(me._canvas).pos());
 
-                if (me._captureedControl) {
+                if (me._captureedControl)
+                {
                     callback(pos, me._captureedControl);
                 }
-                else {
-                    for(var c of me._controls){
+                else
+                {
+                    for(var c of me._controls)
+                    {
                         if (c.bounds().containsPoint(pos) == false) continue;
                         if (callback(pos, c)) break;
                     }

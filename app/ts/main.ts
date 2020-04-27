@@ -1,5 +1,4 @@
 /// <reference path="d.ts/cep.d.ts"/>
-/// <reference path="d.ts/jquery.d.ts"/>
 
 /**
  * Color Temperature class
@@ -21,22 +20,24 @@ class ColorTemperature {
     private _selectedColor: RgbColor;
     private _sliders: CanvasUI.Slider[];
 
-    private _miredScale: number = 0.3;
-    private _luminanceScale: number = 0.3;
+    private _miredScale: number = 0.1;
+    private _luminanceScale: number = 0.1;
 
     initialize() : void {
 
         var me = this;
 
         this._sliders = [null, null];
-        this._uiManager = new CanvasUI.Manager($('.viewport'), $('#mainCanvas'));
+        this._uiManager = new CanvasUI.Manager(
+            document.getElementById('viewport'),
+            document.getElementById('mainCanvas') as HTMLCanvasElement);
 
         this.grid = new ColorGrid(3);
         this.updateColors(new RgbColor(0.8, 0.8, 0.8));
-        this.resizeWatcher = new ResizeWatcher($('#screen'),
+        this.resizeWatcher = new ResizeWatcher(document.getElementById('screen'),
             function() {me.onResize(); });
 
-        $('#mainCanvas').mousedown((e) => {
+        document.getElementById('mainCanvas').addEventListener("mousedown", (e) => {
             var color = me.grid.getColor(e.offsetX, e.offsetY);
             if (color) me.setColor(color);
         });
@@ -102,14 +103,14 @@ class ColorTemperature {
 
     private onResize() : void {
 
-        var scr = $('#screen');
-        var sw = scr.width();
-        var sh = scr.height();
+        var scrRc = document.getElementById('screen').getBoundingClientRect();
+        var sw = scrRc.width;
+        var sh = scrRc.height;
 
         var cx = 0;
         var cy = 0;
         var padding = 8;
-        var vpSize;
+        var vpSize : number;
 
         if (sw > sh)
         {
@@ -122,14 +123,16 @@ class ColorTemperature {
             cy = (sh - vpSize) / 2;
         }
 
-        $('.viewport').width(vpSize);
-        $('.viewport').height(vpSize);
-        $('.viewport').css('left', cx.toString() + 'px');
-        $('.viewport').css('top', cy.toString() + 'px');
+        var vp = document.getElementById('viewport');
+        vp.style.width = vpSize.toString() + 'px';
+        vp.style.height = vpSize.toString() + 'px';
+        vp.style.left = cx.toString() + 'px';
+        vp.style.top = cy.toString() + 'px';
 
-        var mainCanvas : any = $('#mainCanvas')[0];
+        var mainCanvas = document.getElementById('mainCanvas') as HTMLCanvasElement;
         var ctx = mainCanvas.getContext('2d');
-        ctx.clearRect(0, 0, $('#mainCanvas').width(), $('#mainCanvas').height());
+        var rc  = mainCanvas.getBoundingClientRect();
+        ctx.clearRect(0, 0, rc.width, rc.height);
 
         ctx.canvas.width = vpSize;
         ctx.canvas.height = vpSize;
@@ -141,11 +144,12 @@ class ColorTemperature {
     };
 
     draw() : void {
-        var mainCanvas : any = $('#mainCanvas')[0];
+        var mainCanvas = document.getElementById('mainCanvas') as HTMLCanvasElement;
         var ctx = mainCanvas.getContext('2d');
 
         // Clear main canvas
-        ctx.clearRect(0, 0, $('#mainCanvas').width(), $('#mainCanvas').height());
+        var rc  = mainCanvas.getBoundingClientRect();
+        ctx.clearRect(0, 0, rc.width, rc.height);
         this.grid.draw(ctx);
         this._uiManager.draw();
     }
@@ -232,10 +236,20 @@ function PhotoshopCallbackUnique(csEvent) {
         var args = eventData.eventData;
 
         if (eventData.eventID === eventSet && args.hasOwnProperty("source") && args.hasOwnProperty("to")) {
-            if (args.source === "eyeDropperSample" || args.source === "photoshopPicker") {
-                if (args.to._obj === "RGBColor") {
+            if (args.source === "eyeDropperSample" || args.source === "photoshopPicker" ||
+                 args.source === "colorPickerWheel" || args.source === "colorPickerPanel") {
+                if (args.to._obj === "RGBColor")
+                {
                     var t = args.to;
-                    colorTemperature.updateColors(new RgbColor(t.red / 255, t.grain / 255, t.blue / 255));
+                    colorTemperature.updateColors(
+                        new RgbColor(t.red / 255, t.grain / 255, t.blue / 255));
+                    colorTemperature.draw();
+                }
+                else if (args.to._obj === "HSBColorClass" )
+                {
+                    var t = args.to;
+                    colorTemperature.updateColors(
+                        RgbColor.fromHsv(t.hue._value, t.saturation, t.brightness));
                     colorTemperature.draw();
                 }
             }
@@ -250,7 +264,7 @@ function setColor(color: RgbColor) {
     if (csInterface) csInterface.evalScript(`setColor(${r}, ${g}, ${b})`);
 }
 
-$(document).ready(function(){
+//document.getElementById('viewport').addEventListener("window.loadend", () => {
 
     colorTemperature.initialize();
 
@@ -260,10 +274,10 @@ $(document).ready(function(){
         csInterface.addEventListener("com.adobe.PhotoshopJSONCallback" + gExtensionID, PhotoshopCallbackUnique);
 
         // Tell Photoshop the events we want to listen for
-        var event = new CSEvent("com.adobe.PhotoshopRegisterEvent", "APPLICATION");
-        event.extensionId = gExtensionID;
-        event.data = gRegisteredEvents.toString();
-        csInterface.dispatchEvent(event);
+        var csEvent = new CSEvent("com.adobe.PhotoshopRegisterEvent", "APPLICATION");
+        csEvent.extensionId = gExtensionID;
+        csEvent.data = gRegisteredEvents.toString();
+        csInterface.dispatchEvent(csEvent);
     }
 
-});
+//});

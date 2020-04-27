@@ -8,12 +8,14 @@ This is a Photoshop CC plug-in which shows warmer and cooler colors of current c
 
 ### Download Latest Build
 
+**For Photoshop 2020/CC 2019:** [ColorTemperature_1_2_200427_28.zip](https://github.com/Higeneko9/ColorTemperature/raw/master/dist/ColorTemperature_1_2_200427_28.zip)
+
 **For Photoshop CC 2018:** [ColorTemperature_1_1_171022_21.zip](https://github.com/Higeneko9/ColorTemperature/raw/master/dist/ColorTemperature_1_1_171022_21.zip)
 
 **For Photoshop CC 2017:** [ColorTemperature_1_0_170320_12.zip](https://github.com/Higeneko9/ColorTemperature/raw/master/dist/ColorTemperature_1_0_170320_12.zip)
 
 ## How to install:
-1. Make sure your Photoshop is up to date (This package tested against Photoshop CC 2018)
+1. Make sure your Photoshop is up to date (This package tested against Photoshop 2020/CC 2019)
 2. Unzip this package.
 2. In Photoshop, select a menu **"File -> Scripts -> browse"** and pick **"Install Color Temperature1.1.jsx"**
 3. Follow the installer's instructions.
@@ -36,12 +38,14 @@ If installer doesn't work, try the following instruction:
 
 ### ダウンロード
 
+**Photoshop 2020/CC 2019用:** [ColorTemperature_1_2_200427_28.zip](https://github.com/Higeneko9/ColorTemperature/raw/master/dist/ColorTemperature_1_2_200427_28.zip)
+
 **Photoshop CC 2018用:** [ColorTemperature_1_1_171022_21.zip](https://github.com/Higeneko9/ColorTemperature/raw/master/dist/ColorTemperature_1_1_171022_21.zip)
 
 **Photoshop CC 2017用:** [ColorTemperature_1_0_170320_12.zip](https://github.com/Higeneko9/ColorTemperature/raw/master/dist/ColorTemperature_1_0_170320_12.zip)
 
 ## インストール方法
-1. 最新のPhotoshop CCであることを確認してください (Photoshop CC 2018でテスト動作確認しています)
+1. 最新のPhotoshopであることを確認してください (Photoshop 2020/CC 2019でテスト動作確認しています)
 2. Zipファイルを解凍します
 2. フォトショップ上を開き、メニューの **"ファイル -> スクリプト -> 参照"** を選び **"Install Color Temperature1.1.jsx"** を選択します
 3. 英語の説明がでますが、何回かOKをクリックすればインストール完了です

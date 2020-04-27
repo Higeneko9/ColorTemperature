@@ -30,6 +30,43 @@ class RgbColor {
     }
 
     /**
+     * @description Create a RgbColor from given HSV values.
+     *
+     * @param      h {numnumber} The Hue value [0 - 360).
+     * @param      s {numnumber} The Saturation value [0 - 100].
+     * @param      v {numnumber} The Value value [0 - 100].
+     *
+     * @return     {RgbColor} The converted RgbColor.
+     */
+    static fromHsv(h:number, s:number, v:number) : RgbColor {
+
+        // Normalize input values.
+        while (h >= 360.0) h -= 360.0;
+        while (h < 0) h += 360.0;
+        h = MathHelper.saturate(h / 360.0);
+        s = MathHelper.saturate(s / 100.0);
+        v = MathHelper.saturate(v / 100.0);
+
+        var i = Math.floor(h * 6);
+        var f = h * 6 - i;
+        var p = v * (1 - s);
+        var q = v * (1 - f * s);
+        var t = v * (1 - (1 - f) * s);
+
+        var r: number, g: number, b: number;
+        switch (i % 6) {
+            case 0: r = v, g = t, b = p; break;
+            case 1: r = q, g = v, b = p; break;
+            case 2: r = p, g = v, b = t; break;
+            case 3: r = p, g = q, b = v; break;
+            case 4: r = t, g = p, b = v; break;
+            case 5: r = v, g = p, b = q; break;
+        } 
+
+        return new RgbColor(r, g, b);
+    }
+
+    /**
      * @description Clamps the specified RGB color within the range of 0 to 1.
      *
      * @param      rgbColor {RgbColor} The RGB color.

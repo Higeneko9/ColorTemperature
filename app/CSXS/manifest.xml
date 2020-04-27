@@ -1,17 +1,17 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="no"?>
 <ExtensionManifest ExtensionBundleId="net.higeneko.ColorTemperature" ExtensionBundleName="ColorTemperature" ExtensionBundleVersion="1.0" Version="5.0">
   <ExtensionList>
-    <Extension Id="net.higeneko.ColorTemperature.extension" Version="1.1.171022.21" />
+    <Extension Id="net.higeneko.ColorTemperature.extension" Version="1.2.200427.28" />
   </ExtensionList>
   <ExecutionEnvironment>
     <HostList>
-      <Host Name="PHXS" Version="[17.0,99.9]" />
+      <Host Name="PHXS" Version="[20.0,99.9]" />
     </HostList>
     <LocaleList>
       <Locale Code="All" />
     </LocaleList>
     <RequiredRuntimeList>
-      <RequiredRuntime Name="CSXS" Version="7.0" />
+      <RequiredRuntime Name="CSXS" Version="9.0" />
     </RequiredRuntimeList>
   </ExecutionEnvironment>
   <DispatchInfoList>

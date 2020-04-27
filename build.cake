@@ -1,11 +1,8 @@
-#addin nuget:?package=Newtonsoft.Json&version=9.0.1
-#addin nuget:?package=BuildWebCompiler&version=1.11.375
-
-#addin "Cake.Npm"
-#addin "Cake.FileHelpers"
-#addin "Cake.Json"
-#addin "SharpZipLib"
-#addin "Cake.Compression"
+#addin nuget:?package=Cake.Npm&version=0.17.0
+#addin nuget:?package=Cake.FileHelpers&version=3.2.1
+#addin nuget:?package=Cake.Json&version=4.0.0
+#addin nuget:?package=SharpZipLib&version=1.2.0
+#addin nuget:?package=Cake.Compression&version=0.2.4
 #load "scripts/utils.cake"
 
 using System.Xml.Linq;
@@ -36,7 +33,6 @@ var PackgeSrcDir = "./pkg";
 
 var InitJsonFilename = PackgeSrcDir + "/init.json";
 var ManifestFilename = AppSrcDir + "/CSXS/manifest.xml";
-var NpmSassFileanme = "./tools/node_modules/npm-sass/bin/npm-sass";
 
 // Build directories
 var BuildDir = "./build/" + Configuration;
@@ -68,15 +64,6 @@ Version BuildVersion;
 var TsCompiler  = "";
 
 Setup(context => {
-
-    if (FileExists(NpmSassFileanme) == false)
-    {
-        Information("Installing npm-sass");
-        NpmInstall(s => {
-            s.FromPath("./tools/");
-            s.AddPackage("npm-sass");
-        });
-    }
 
     TsCompiler = Context.Tools.Resolve("tsc.exe").FullPath;
 
@@ -127,7 +114,6 @@ Task("Clean")
 ItemCollection compiledAppItems;
 
 Task("Compile")
-    .IsDependentOn("CompileSCSS")
     .IsDependentOn("CompileTypeScript")
     .IsDependentOn("PlaceAppFiles")
     .Does(() => {
@@ -149,27 +135,9 @@ Task("CompileTypeScript")
             "-outDir", CompiledAppDir + "/js");
     });
 
-// Compile SCSS
-var scssItems = CreateItemCollection(
-    AppSrcDir + "/scss", "/**/*.scss",
-    CompiledAppDir + "/css", ".css");
-
-Task("CompileSCSS")
-    .WithCriteria(() => scssItems.IsStaled())
-    .Does(() => {
-
-        var cmd = "node";
-        foreach(var item in scssItems)
-        {
-            Information("{0} -> {1}", item.SourcePath, item.TargetPath);
-            EnsureDirectoryExists(new FilePath(item.TargetPath).GetDirectory());
-            RunProcess("node", "./scripts/CompileSass.js", item.SourcePath, item.TargetPath);
-        }
-    });
-
 // Place App items
 var appItems = CreateItemCollection();
-appItems.Include(AppSrcDir, "/**/*", CompiledAppDir, null, (p, f) => (p.Contains("/ts/") || p.Contains("/scss/"))? null : f);
+appItems.Include(AppSrcDir, "/**/*", CompiledAppDir, null, (p, f) => (p.Contains("/ts/"))? null : f);
 appItems.Include(AppSrcDir + "/ts", "/**/*.js", CompiledAppDir + "/js");
 
 Task("PlaceAppFiles")
@@ -199,8 +167,8 @@ Task("Sign")
     .WithCriteria(SignApp)
     .WithCriteria(() => compiledAppItems.IsStaled())
     .Does(() => {
+
         // Create a ZXP file.
-        
         Information("Signing App at {0}", CompiledAppDir);
         EnsureDeleteFile(SignedAppZxp);
         RunProcess(BuildConfig.ZxpSignCmd, "-sign",
@@ -208,8 +176,8 @@ Task("Sign")
             NormalizePath(SignedAppZxp),
             NormalizePath(BuildConfig.CertFile),
             FileReadText(BuildConfig.PassFile),
-            "-tsa http://timestamp.comodoca.com/");
-        
+            "-tsa  http://time.certum.pl");
+
         // Extract to signed-app directory.
         CleanDirectory(SignedAppDir);
         ZipUncompress(SignedAppZxp, SignedAppDir);

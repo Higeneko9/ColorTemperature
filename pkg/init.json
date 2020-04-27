@@ -5,14 +5,14 @@
   CONTACT_INFO: "support@higeneko.net",
   PRODUCT_NAME: "Color Temperature",
   PRODUCT_ID: "net.higeneko.color-temperature",
-  PRODUCT_VERSION: "1.1.171022.21",
+  PRODUCT_VERSION: "1.2.200427.28",
 
   /* PRODUCTS =================================== */
 
   /* Photoshop versions range */
 
   /* Leave undefined for no limit */
-  MIN_VERSION: 19.0,
+  MIN_VERSION: 20.0,
   MAX_VERSION: void 0,
 
   /* Product Source Folders */

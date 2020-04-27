@@ -2,6 +2,6 @@
    "compileOnSave": true,   
     "compilerOptions" : {
         "outDir": "../js",
-        "target": "es6"
+        "target": "es2016"
     }
 }
